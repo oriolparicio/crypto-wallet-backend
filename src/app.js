@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 
 // Router
 import authRouter from './routes/authRouter.js';
+import transactionsRouter from './routes/transactionsRouter.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(helmet());
 
 // 2) ROUTES
 app.use(`/api/auth`, authRouter);
+app.use(`/api/transactions`, transactionsRouter);
 
 // Handle undefined routes
 app.all('*', (req, res, next) => {
