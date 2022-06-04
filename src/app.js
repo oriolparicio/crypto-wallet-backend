@@ -25,6 +25,9 @@ app.use(compression());
 app.use(helmet());
 
 // 2) ROUTES
+app.route('/').get((req, res) => {
+  res.sendFile(process.cwd() + '../index.html');
+});
 app.use(`/api/auth`, authRouter);
 app.use(`/api/transactions`, transactionsRouter);
 

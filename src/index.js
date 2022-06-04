@@ -8,7 +8,14 @@ const db_uri = process.env.DB_STRING.replace(
 const api_port = process.env.PORT || 4000;
 
 mongoose
-  .connect(db_uri, {})
+  .connect(db_uri, {
+    server: {
+      socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 },
+    },
+    replset: {
+      socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 },
+    },
+  })
   .then(() => {
     console.log('┌──────────────────────────────────────┐');
     console.log('| > Connected to the database!         |');
