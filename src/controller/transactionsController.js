@@ -37,7 +37,6 @@ const postTransaction = async (req, res, next) => {
   if (!transaction) {
     throw new APIError('Failed to create transaction', 500);
   }
-  console.log(transaction);
 
   // Response
   return res.status(201).send({
