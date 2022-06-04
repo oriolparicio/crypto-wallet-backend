@@ -10,7 +10,9 @@ const getUserTransactions = async (req, res, next) => {
   let id = req.params.id;
   let transaction = await Transaction.find({
     $or: [{ origin: id }, { destination: id }],
-  });
+  })
+    .sort({ timestamp: 'desc' })
+    .exec();
   if (!transaction) {
     throw new APIError('Document not found', 404);
   }
