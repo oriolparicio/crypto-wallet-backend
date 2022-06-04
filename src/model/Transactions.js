@@ -2,11 +2,6 @@ import mongoose from 'mongoose';
 
 const transactionsSchema = new mongoose.Schema(
   {
-    // _id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   default: mongoose.Types.ObjectId(),
-    //   unique: true,
-    // },
     amount: { type: Number, required: true },
     timestamp: {
       type: Date,
@@ -22,8 +17,8 @@ const transactionsSchema = new mongoose.Schema(
   }
 );
 
-// Speed Optimization Indexing the timestamp
-// transactionsSchema.index({ _id: 1 });
+// Speed Optimization Indexing the id
+transactionsSchema.index({ id: 1 });
 
 const Transaction = mongoose.model('transaction', transactionsSchema);
 
