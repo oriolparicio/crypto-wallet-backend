@@ -5,11 +5,12 @@ import {
   getUserTransactions,
   postTransaction,
 } from '../controller/transactionsController.js';
+import { protect } from '../controller/authController.js';
 
 const router = Router();
 
 // Transactions
-router.get('/:id', getUserTransactions);
-router.post('/', postTransaction);
+router.get('/:id', protect, getUserTransactions);
+router.post('/', protect, postTransaction);
 
 export default router;

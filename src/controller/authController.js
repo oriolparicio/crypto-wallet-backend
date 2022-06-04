@@ -1,8 +1,10 @@
+// COmponents
 import User from '../model/User.js';
 import APIError from '../utils/apiError.js';
-
 import jwt from 'jsonwebtoken';
-import bcryptjs from 'bcryptjs';
+
+// Utils
+import { checkHeadersAuthentification } from '../utils/authChecks.js';
 
 const signToken = (id) => {
   // Create JWT token
@@ -58,4 +60,51 @@ const login = async (req, res) => {
   // Send the token back to the client
   createAndSendToken(user, 200, res);
 };
-export { login };
+
+// Check if valid Token
+const protect = async (req, res, next) => {
+  // Get the token
+  let token;
+  if (checkHeadersAuthentification(req)) {
+    // Split Bearer keyword from the token
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    // User is not authorized
+    res.status(401).send({
+      message: 'You are not logged in.',
+    });
+    throw new APIError('You are not logged in', 401);
+  }
+
+  let decoded;
+  try {
+    // Validate the token (will cause an error if the token has expired or has been hardcoded)
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    res.status(401).send({
+      message: 'Unauthorized.',
+    });
+    throw new APIError('Unauthorized', 401, error);
+  }
+
+  // Check if the user still exists
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    res.status(401).send({
+      message: 'The user belonging to this token does no longer exist.',
+    });
+    throw new APIError(
+      'The user belonging to this token does no longer exist.',
+      401
+    );
+  }
+
+  // Grant access to protected routes
+  req.user = user;
+
+  next();
+};
+
+export { login, protect };
